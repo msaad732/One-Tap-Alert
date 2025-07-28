@@ -1,0 +1,183 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #f8fafc 0%, #e3e6f3 100%);
+  margin: 0;
+  min-height: 100vh;
+  color: #222;
+}
+
+.hero {
+  background: linear-gradient(120deg, #d32f2f 0%, #4285F4 100%);
+  color: #fff;
+  padding: 40px 20px 30px 20px;
+  border-radius: 0 0 32px 32px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  margin-bottom: 32px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 32px 24px;
+  margin: 0 auto 32px auto;
+  max-width: 420px;
+}
+
+button, .btn {
+  padding: 14px 28px;
+  background: linear-gradient(90deg, #4285F4 60%, #d32f2f 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(66,133,244,0.08);
+  transition: background 0.2s, transform 0.2s;
+  margin: 8px 0;
+}
+button:hover, .btn:hover {
+  background: linear-gradient(90deg, #d32f2f 60%, #4285F4 100%);
+  transform: translateY(-2px) scale(1.04);
+}
+
+input[type="email"], input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0 18px 0;
+  border: 1px solid #cfd8dc;
+  border-radius: 7px;
+  font-size: 16px;
+  background: #f7fafd;
+  transition: border 0.2s;
+}
+input[type="email"]:focus, input[type="password"]:focus {
+  border: 1.5px solid #4285F4;
+  outline: none;
+}
+
+#map {
+  width: 100%;
+  height: 400px;
+  margin-top: 20px;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(66,133,244,0.07);
+  border: none;
+}
+
+#infoBox {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  padding: 12px 18px;
+  margin: 18px auto 0 auto;
+  max-width: 420px;
+  font-size: 17px;
+}
+
+#statusBox {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff3e0;
+  color: #d32f2f;
+  padding: 10px 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(211,47,47,0.08);
+  font-weight: 600;
+  z-index: 2000;
+  display: none;
+}
+
+#panicBtn {
+  background: linear-gradient(90deg, #d32f2f 60%, #ff5252 100%);
+  color: white;
+  font-size: 26px;
+  padding: 18px 36px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  position: fixed;
+  bottom: 36px;
+  right: 36px;
+  z-index: 999;
+  box-shadow: 0 4px 24px rgba(211,47,47,0.18);
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(211,47,47,0.3); }
+  70% { box-shadow: 0 0 0 18px rgba(211,47,47,0); }
+  100% { box-shadow: 0 0 0 0 rgba(211,47,47,0); }
+}
+
+#countdownModal {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(211,47,47,0.13);
+  border: 2px solid #d32f2f;
+  padding: 32px 24px;
+  text-align: center;
+  z-index: 1000;
+}
+
+/* Admin Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(66,133,244,0.07);
+  margin-top: 24px;
+}
+th, td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e3e6f3;
+  text-align: left;
+}
+th {
+  background: linear-gradient(90deg, #4285F4 60%, #d32f2f 100%);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+tr:nth-child(even) {
+  background: #f7fafd;
+}
+tr:hover {
+  background: #e3e6f3;
+}
+
+/* Links */
+a {
+  color: #4285F4;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+a:hover {
+  color: #d32f2f;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .card, #infoBox {
+    padding: 16px 6px;
+    max-width: 98vw;
+  }
+  #map {
+    height: 220px;
+  }
+  .hero {
+    padding: 24px 8px 18px 8px;
+  }
+  #panicBtn {
+    padding: 12px 18px;
+    font-size: 18px;
+    bottom: 16px;
+    right: 16px;
+  }
+}

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>SafePath Admin Dashboard</title>
+  <link rel="stylesheet" href="style-admin.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+
+<body>
+  <!-- Login Section -->
+  <div class="login-container" id="loginDiv">
+    <div class="login-card">
+      <div class="login-header">
+        <i class="fas fa-shield-alt"></i>
+        <h1>Admin Login</h1>
+        <p>Access the emergency management dashboard</p>
+      </div>
+      
+      <form class="login-form" onsubmit="login(); return false;">
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Enter your email" required />
+        </div>
+        
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required />
+        </div>
+        
+        <button type="submit" class="login-button">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Login</span>
+        </button>
+      </form>
+      
+      <div id="loginStatus" class="login-status"></div>
+      
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Main Page</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div class="dashboard-container" id="dashboard" style="display:none;">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <i class="fas fa-shield-alt"></i>
+        <h2>SafePath</h2>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="#dashboard" class="nav-item active">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#alerts" class="nav-item">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Alerts</span>
+        </a>
+        <a href="#locations" class="nav-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Locations</span>
+        </a>
+        <a href="#settings" class="nav-item">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button onclick="logout()" class="logout-button">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="content-header">
+        <h1>Emergency Alerts Dashboard</h1>
+        <p>Live emergency alerts & location tracking</p>
+      </header>
+
+      <!-- Map Section -->
+      <section class="map-section">
+        <div class="section-header">
+          <h2>Live Map</h2>
+          <div class="map-controls">
+            <button class="control-button" onclick="refreshMap()">
+              <i class="fas fa-sync-alt"></i>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </div>
+        <div id="map" class="map-container"></div>
+      </section>
+
+      <!-- Alerts Table Section -->
+      <section class="alerts-section">
+        <div class="section-header">
+          <h2>Recent Alerts</h2>
+          <div class="table-controls">
+            <input type="text" id="searchAlerts" placeholder="Search alerts..." class="search-input">
+            <button class="control-button" onclick="exportData()">
+              <i class="fas fa-download"></i>
+              <span>Export</span>
+            </button>
+          </div>
+        </div>
+        
+        <div class="table-container">
+          <table id="alertsTable" class="alerts-table">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Location</th>
+                <th>Address</th>
+                <th>Timestamp</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Table rows will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhMsCZTDAIMllWRzYRss00-z1h1UDnWwI&callback=initMap"></script>
+  <script>
+    // 🔁 Replace with your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJ0uIB6F8XqcEAgfzNElBYC6v2vgTP_4o",
+      authDomain: "emergency-tracker-d63a4.firebaseapp.com",
+      projectId: "emergency-tracker-d63a4",
+      storageBucket: "emergency-tracker-d63a4.firebasestorage.app",
+      messagingSenderId: "560432362765",
+      appId: "1:560432362765:web:e2863c5c527d7f40f56c44",
+      measurementId: "G-SY5DMPYKNX"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    // 🔐 Admin Login
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const loginButton = document.querySelector('.login-button');
+      const loginStatus = document.getElementById("loginStatus");
+
+      // Show loading state
+      loginButton.disabled = true;
+      loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Logging in...</span>';
+      loginStatus.textContent = '';
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          document.getElementById("loginDiv").style.display = "none";
+          document.getElementById("dashboard").style.display = "flex";
+        })
+        .catch((error) => {
+          loginStatus.textContent = error.message;
+          loginStatus.className = 'login-status error';
+          
+          // Reset button
+          loginButton.disabled = false;
+          loginButton.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Login</span>';
+        });
+    }
+
+    // 🔐 Logout
+    function logout() {
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
+
+    // 🔄 Watch Auth State
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        document.getElementById("loginDiv").style.display = "none";
+        document.getElementById("dashboard").style.display = "flex";
+        loadMapData();
+      } else {
+        document.getElementById("dashboard").style.display = "none";
+        document.getElementById("loginDiv").style.display = "flex";
+      }
+    });
+
+    let map;
+    window.initMap = function () {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: {lat: 20, lng: 0},
+        zoom: 2,
+        styles: [
+          {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
+          {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+          {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+          {
+            featureType: 'administrative.locality',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#d59563'}]
+          },
+          {
+            featureType: 'poi',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#d59563'}]
+          },
+          {
+            featureType: 'poi.park',
+            elementType: 'geometry',
+            stylers: [{color: '#263c3f'}]
+          },
+          {
+            featureType: 'poi.park',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#6b9a76'}]
+          },
+          {
+            featureType: 'road',
+            elementType: 'geometry',
+            stylers: [{color: '#38414e'}]
+          },
+          {
+            featureType: 'road',
+            elementType: 'geometry.stroke',
+            stylers: [{color: '#212a37'}]
+          },
+          {
+            featureType: 'road',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#9ca5b3'}]
+          },
+          {
+            featureType: 'road.highway',
+            elementType: 'geometry',
+            stylers: [{color: '#746855'}]
+          },
+          {
+            featureType: 'road.highway',
+            elementType: 'geometry.stroke',
+            stylers: [{color: '#1f2835'}]
+          },
+          {
+            featureType: 'road.highway',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#f3d19c'}]
+          },
+          {
+            featureType: 'transit',
+            elementType: 'geometry',
+            stylers: [{color: '#2f3948'}]
+          },
+          {
+            featureType: 'transit.station',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#d59563'}]
+          },
+          {
+            featureType: 'water',
+            elementType: 'geometry',
+            stylers: [{color: '#17263c'}]
+          },
+          {
+            featureType: 'water',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#515c6d'}]
+          },
+          {
+            featureType: 'water',
+            elementType: 'labels.text.stroke',
+            stylers: [{color: '#17263c'}]
+          }
+        ]
+      });
+    }
+
+    function loadMapData() {
+      const tableBody = document.querySelector("#alertsTable tbody");
+      db.ref("liveLocations").on("value", (snapshot) => {
+        const data = snapshot.val();
+        tableBody.innerHTML = "";
+        if (!data) return;
+
+        // Clear markers
+        if (window.alertMarkers) {
+          window.alertMarkers.forEach(marker => marker.setMap(null));
+        }
+        window.alertMarkers = [];
+
+        Object.keys(data).forEach((userId) => {
+          const {lat, lng, timestamp, address = '', street = '', place = ''} = data[userId];
+
+          const marker = new google.maps.Marker({
+            map: map,
+            position: {lat, lng},
+            title: `User: ${userId}`,
+            icon: {
+              url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+              scaledSize: new google.maps.Size(32, 32)
+            }
+          });
+          window.alertMarkers.push(marker);
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td><strong>${userId}</strong></td>
+            <td>${lat ? lat.toFixed(5) : ''}, ${lng ? lng.toFixed(5) : ''}</td>
+            <td>${address || 'N/A'}</td>
+            <td>${timestamp ? new Date(timestamp).toLocaleString() : 'N/A'}</td>
+            <td>
+              <button class="action-button" onclick="viewOnMap(${lat}, ${lng})">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>View</span>
+              </button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+      });
+    }
+
+    function viewOnMap(lat, lng) {
+      map.setCenter({lat, lng});
+      map.setZoom(15);
+    }
+
+    function refreshMap() {
+      loadMapData();
+    }
+
+    function exportData() {
+      // Implementation for data export
+      alert('Export functionality coming soon!');
+    }
+
+    // Search functionality
+    document.getElementById('searchAlerts')?.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll('#alertsTable tbody tr');
+      
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+
+</html>

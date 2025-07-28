@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>SafePath – One Tap Alert: Emergency Help, Instantly</title>
+  <link rel="stylesheet" href="style-user.css">
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div class="status-indicator" id="statusBox">
+      <i class="fas fa-circle"></i>
+      <span>Online</span>
+    </div>
+    <a href="admin.html" class="admin-link">
+      <i class="fas fa-cog"></i>
+      <span>Admin</span>
+    </a>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">One Tap Alert: Emergency Help, Instantly</h1>
+      <p class="hero-subtitle">Your safety is our priority. Get help with just one tap.</p>
+      <button class="cta-button" onclick="sendAlert()">
+        <i class="fas fa-location-arrow"></i>
+        <span>Send Alert</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="card">
+      <div class="card-header">
+        <h2>Emergency Location Sharing</h2>
+        <p>Click the button below to share your current location with emergency services:</p>
+      </div>
+      
+      <div class="button-group">
+        <button class="primary-button" onclick="sendAlert()">
+          <i class="fas fa-location-arrow"></i>
+          <span>Send My Location</span>
+        </button>
+        
+        <button class="help-centers-button" onclick="showNearbyHelpCenters()">
+          <i class="fas fa-hospital"></i>
+          <span>Show Nearby Help Centers</span>
+        </button>
+      </div>
+
+      <!-- Map Section -->
+      <div class="map-container">
+        <div id="map"></div>
+        <div id="infoBox" class="info-box"></div>
+        <button class="clear-directions-button" onclick="clearDirections()" style="display: none;">
+          <i class="fas fa-times"></i>
+          <span>Clear Route</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Panic Button (Fixed) -->
+  <button id="panicBtn" class="panic-button" onclick="startPanicCountdown()">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span>PANIC</span>
+  </button>
+
+  <!-- Countdown Modal -->
+  <div id="countdownModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="fas fa-clock"></i>
+        <h3>Emergency Alert</h3>
+      </div>
+      <p>Sending alert in <span id="countdown" class="countdown-number">5</span> seconds...</p>
+      <div class="modal-actions">
+        <button class="cancel-button" onclick="cancelPanic()">
+          <i class="fas fa-times"></i>
+          <span>Cancel</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alarm Sound -->
+  <audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"></audio>
+
+  <!-- Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="script.js"></script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhMsCZTDAIMllWRzYRss00-z1h1UDnWwI&callback=initMap&libraries=places">
+    </script>
+</body>
+
+</html>
