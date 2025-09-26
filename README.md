@@ -44,7 +44,7 @@ PWA Technology – App-like installation & offline functionality
 
 🚀 Getting Started
 1️⃣ Clone the Repository
-git clone https://github.com/your-username/safe-path.git
+git clone https://github.com/msaad732/One-Tap-Alert
 cd safe-path
 
 2️⃣ Install Dependencies
@@ -84,11 +84,9 @@ Muhammad Saad
 
 Eman Khaliq
 
-📸 Screenshots
-
-(Add screenshots/GIFs of Panic Button, Map View, Admin Dashboard here)
 
 💡 Inspiration
 
 We built Safe Path during the Google Maps Platform Award Hackathon to help travelers, students, and anyone needing quick help. The goal: provide a lightweight, reliable, and fast emergency app that works even offline.
+
 
