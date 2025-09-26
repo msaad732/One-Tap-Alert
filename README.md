@@ -39,40 +39,62 @@ Safe Path is a **Progressive Web App (PWA)** designed to provide instant emergen
 ```bash
 git clone https://github.com/msaad732/One-Tap-Alert
 cd safe-path
-2️⃣ Install Dependencies
-bash
-Copy code
-npm install
-3️⃣ Setup Environment Variables
-Create a .env file in the root directory and add your API keys:
+````
 
-env
-Copy code
+### 2️⃣ Install Dependencies
+
+```bash
+npm install
+```
+
+### 3️⃣ Setup Environment Variables
+
+Create a `.env` file in the root directory and add your API keys:
+
+```env
 REACT_APP_GOOGLE_MAPS_API_KEY=your_api_key_here
 REACT_APP_FIREBASE_API_KEY=your_firebase_key_here
-4️⃣ Run the Project
-bash
-Copy code
+```
+
+### 4️⃣ Run the Project
+
+```bash
 npm start
-The app will run at http://localhost:3000.
+```
 
-📦 Deployment
-You can deploy Safe Path on:
+The app will run at:
+👉 [http://localhost:3000](http://localhost:3000)
 
-Firebase Hosting
+---
 
-Vercel
+## 📦 Deployment
 
-Netlify
+You can deploy **Safe Path** on:
 
-Any static hosting service
+* Firebase Hosting
+* Vercel
+* Netlify
+* Any static hosting service
 
-👨‍💻 Built By
-Muhammad Saad
+---
 
-Eman Khaliq
+## 👨‍💻 Built By
 
-💡 Inspiration
-We built Safe Path during the Google Maps Platform Award Hackathon to help travelers, students, and anyone needing quick help.
+* **Muhammad Saad**
+* **Eman Khaliq**
 
-Our goal: provide a lightweight, reliable, and fast emergency app that works even offline.
+---
+
+## 💡 Inspiration
+
+We built Safe Path during the **Google Maps Platform Award Hackathon** to help **travelers, students, and anyone needing quick help**.
+
+Our goal: provide a **lightweight, reliable, and fast emergency app** that works even offline.
+
+---
+
+## 🛡️ License
+
+This project is licensed under the **MIT License** – feel free to use and modify.
+
+
